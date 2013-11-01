@@ -17,7 +17,10 @@ class Admin::ContentController < Admin::BaseController
         return(redirect_to :action => 'index')
     end
 
-    if not params[:merge_with]
+    @main_article = Article.find(params[:id])
+    @merge_article = Article.find(params[:merge_with]) rescue nil
+
+    if not params[:merge_with] or @merge_article.nil?# or the article doesn't exist
       flash[:error] = _("There is no article with that id")
       return(redirect_to :action => 'index')
     end
@@ -29,7 +32,8 @@ class Admin::ContentController < Admin::BaseController
 
     # delete @merge_article
     @merge_article.destroy
-    return(redirect_to :action => 'index')
+    #return(redirect_to :action => 'index')
+    return(redirect_to :action => 'edit', :id => @main_article.id)
     # what to render
 
 

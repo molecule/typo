@@ -112,10 +112,10 @@ end
 
 When /^(?:|I )fill in "(.*)" with the id for "(.*)"$/ do |field, value|
 
-  @article = Article.find_by_title(value)
+  @article = Article.find_by_title(value) rescue nil
 
   fill_in(field, :with => @article.id) if @article
-  fill_in(field, :with => "") if not @article
+  fill_in(field, :with => "") if @article.nil?
 end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|

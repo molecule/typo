@@ -6,10 +6,6 @@ Feature: Admin Merge Articles
 
   Background:
     Given the blog is set up 
-    Given the following articles exist:
-    | title           | body                        |
-    | "Bananas"          | "Bananas bananas eat eat"         |
-    | "Eggplants"        | "Eggplants don't eat eggplants"   |
 
 
 Scenario: Admin can merge articles
@@ -32,7 +28,6 @@ Scenario: Admin can merge articles
 #Then I should see "article__body_and_extended_editor"
   When I fill in "merge_with" with the id for "Horses"
   And I press "Merge"
-  And I follow "Fish"
   Then I should see "Fish fish eat eat"
   And I should see "Donkies don't eat donkies"
   When I go to the home page
@@ -68,10 +63,9 @@ Scenario: fail to merge with an article that does not exist
   When I follow "Fruit bats"
   And I am on the edit page for "Fruit bats"
 
-  # Can't get this to work...
-  #And I fill in "merge_with" with the id for "Pineapples"
-  #And I press "Merge"
-  #Then I should see "There is no article with that id"
+  And I fill in "merge_with" with the id for "Pineapples"
+  And I press "Merge"
+  Then I should see "There is no article with that id"
 
 Scenario: non-admin cannot merge articles
   Given I am logged in as a non-admin 

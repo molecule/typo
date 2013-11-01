@@ -74,10 +74,8 @@ class Article < Content
   def merge_with(merge_id)
     merge_article = Article.find(merge_id)
     self.body = self.body + merge_article.body
-    self.published_comments = self.published_comments + merge_article.published_comments 
-    merge_article.published_comments
     merge_comments = Comment.find_by_article_id(merge_id)
-    Comment.update_all("article_id = #{merge_id}") 
+    Comment.update_all("article_id = #{self.id}", "article_id = #{merge_id}") 
     #update "belongs to" field 
     self.save
   end
