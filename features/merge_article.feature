@@ -8,7 +8,7 @@ Feature: Admin Merge Articles
     Given the blog is set up 
 
 
-Scenario: Admin can merge articles
+Scenario: When articles are merged, the merged article should contain the text of both previous articles
 
   Given I am logged into the admin panel
   #And I am on the admin content page
@@ -23,9 +23,7 @@ Scenario: Admin can merge articles
   And I press "Publish" 
 
   When I follow "Fish"
-# How to check that you're on the edit page?
   When I am on the edit page for "Fish"
-#Then I should see "article__body_and_extended_editor"
   When I fill in "merge_with" with the id for "Horses"
   And I press "Merge"
   Then I should see "Fish fish eat eat"
@@ -34,8 +32,6 @@ Scenario: Admin can merge articles
   Then I should see "Fish"
   And I should not see "Horses"
 
-#  And I should see "merge_id"
-#  When I fill in "merge_id" with "Fish"
 
 Scenario: Fail to merge article with itself
   Given I am logged into the admin panel
@@ -67,7 +63,7 @@ Scenario: fail to merge with an article that does not exist
   And I press "Merge"
   Then I should see "There is no article with that id"
 
-Scenario: non-admin cannot merge articles
+Scenario: A non-admin cannot merge two articles
   Given I am logged in as a non-admin 
   Then I should not see "Users" 
   

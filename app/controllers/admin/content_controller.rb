@@ -17,6 +17,8 @@ class Admin::ContentController < Admin::BaseController
         return(redirect_to :action => 'index')
     end
 
+    current_user
+
     @main_article = Article.find(params[:id])
     @merge_article = Article.find(params[:merge_with]) rescue nil
 
@@ -211,6 +213,7 @@ class Admin::ContentController < Admin::BaseController
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
     flash[:id] = @article.id
+    @admin = current_user.admin?
     render 'new'
   end
 
