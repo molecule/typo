@@ -41,6 +41,13 @@ Given /^the blog is set up$/ do
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
+
+  User.create!({:login => 'user',
+                :password => 'banana',
+                :email => 'joe@shmoe.com',
+                :profile_id => 2,
+                :name => 'user',
+                :state => 'active'})
 end
 
 And /^I am logged into the admin panel$/ do
@@ -55,6 +62,27 @@ And /^I am logged into the admin panel$/ do
   end
 end
 
+And /^I am logged in as a non-admin$/ do
+  visit '/accounts/login'
+  fill_in 'user_login', :with => 'user'
+  fill_in 'user_password', :with => 'banana'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+Then /^the author for "(.*)" should be "(.*)"/ do |title, author|
+  Article.find_by_title(title).author.should = author
+end
+
+Given /^the following articles exist/ do |article_table|
+  article_table.hashes.each do |article|
+    Article.create!(article)
+  end
+end
 # Single-line step scoper
 When /^(.*) within (.*[^:])$/ do |step, parent|
   with_scope(parent) { When step }
@@ -78,7 +106,16 @@ When /^(?:|I )press "([^"]*)"$/ do |button|
 end
 
 When /^(?:|I )follow "([^"]*)"$/ do |link|
+  #puts page.body
   click_link(link)
+end
+
+When /^(?:|I )fill in "(.*)" with the id for "(.*)"$/ do |field, value|
+
+  @article = Article.find_by_title(value)
+
+  fill_in(field, :with => @article.id) if @article
+  fill_in(field, :with => "") if not @article
 end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|

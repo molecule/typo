@@ -11,6 +11,30 @@ class Admin::ContentController < Admin::BaseController
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"
   end
 
+  def merge_article
+    if params[:id] == params[:merge_with] 
+        flash[:error] = _("Cannot merge an article with itself!")
+        return(redirect_to :action => 'index')
+    end
+
+    if not params[:merge_with]
+      flash[:error] = _("There is no article with that id")
+      return(redirect_to :action => 'index')
+    end
+
+    @main_article = Article.find(params[:id]) 
+    @merge_article = Article.find(params[:merge_with])
+
+    @merged = @main_article.merge_with(params[:merge_with])
+
+    # delete @merge_article
+    @merge_article.destroy
+    return(redirect_to :action => 'index')
+    # what to render
+
+
+  end 
+
   def index
     @search = params[:search] ? params[:search] : {}
     
@@ -139,6 +163,8 @@ class Admin::ContentController < Admin::BaseController
 
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
+
+
   def new_or_edit
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
@@ -180,6 +206,7 @@ class Admin::ContentController < Admin::BaseController
     @images = Resource.images_by_created_at.page(params[:page]).per(10)
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
+    flash[:id] = @article.id
     render 'new'
   end
 
